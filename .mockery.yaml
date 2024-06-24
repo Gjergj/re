@@ -1,0 +1,5 @@
+inpackage: true
+with-expecter: true
+case: snake
+# srcpkg: pkg
+# dir: pkg

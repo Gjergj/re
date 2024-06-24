@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Pack Size Calculator</title>
+    <script>
+        function postPackSizes(e) {
+            e.preventDefault();
+            const packSizes = document.getElementById('packSizes').value.split(',').map(Number);
+            fetch('http://localhost:80/v1/products/', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ pack_sizes: packSizes }),
+            })
+                .then(response => response.json())
+                .then(data => console.log(data))
+                .catch(error => console.error('Error:', error));
+        }
+
+        function getPackageCalculator(e) {
+            e.preventDefault();
+            const items = document.getElementById('items').value;
+            fetch(`http://localhost:80/v1/products/packagecaclulator?items=${items}`)
+                .then(response => response.json())
+                .then(data => {
+                    document.getElementById('result').textContent = JSON.stringify(data);
+                })
+                .catch(error => console.error('Error:', error));
+        }
+    </script>
+</head>
+<body>
+<h2>Post Pack Sizes</h2>
+<form onsubmit="postPackSizes(event)">
+    <input type="text" id="packSizes" placeholder="Enter pack sizes, e.g., 100,300,350">
+    <button type="submit">Submit</button>
+</form>
+
+<h2>Get Package Calculator</h2>
+<form onsubmit="getPackageCalculator(event)">
+    <input type="number" id="items" placeholder="Enter items number">
+    <button type="submit">Calculate</button>
+</form>
+
+<h3>Result:</h3>
+<pre id="result"></pre>
+</body>
+</html>
