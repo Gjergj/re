@@ -19,7 +19,7 @@ Before commiting run `make generate` to generate mocks.
 make dev_run
 ```
 
-### Visit 
+### Visit  [http://localhost](http://localhost)
 
 ### Sample Request
 ```bash
