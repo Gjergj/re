@@ -201,6 +201,144 @@ func TestCalculatePacks(t *testing.T) {
 				250:  1,
 			},
 		},
+		{
+			name: "test calculate packs 6",
+			args: args{
+				orderQuantity:  14,
+				availablePacks: []int{3, 7, 13},
+			},
+			want: map[int]int{
+				7: 2,
+			},
+		},
+		{
+			name: "test calculate packs 7",
+			args: args{
+				orderQuantity:  5,
+				availablePacks: []int{4, 8, 13},
+			},
+			want: map[int]int{
+				8: 1,
+			},
+		},
+		{
+			name: "test calculate packs 8",
+			args: args{
+				orderQuantity:  32,
+				availablePacks: []int{4, 7, 9, 25},
+			},
+			want: map[int]int{
+				7:  1,
+				25: 1,
+			},
+		},
+		{
+			name: "test calculate packs 9",
+			args: args{
+				orderQuantity:  17,
+				availablePacks: []int{3, 7, 13},
+			},
+			want: map[int]int{
+				3: 1,
+				7: 2,
+			},
+		},
+		{
+			name: "test calculate packs 10",
+			args: args{
+				orderQuantity:  14,
+				availablePacks: []int{3, 7, 13, 14},
+			},
+			want: map[int]int{
+				14: 1,
+			},
+		},
+		{
+			name: "test calculate packs 11",
+			args: args{
+				orderQuantity:  8,
+				availablePacks: []int{3, 7, 13, 14},
+			},
+			want: map[int]int{
+				3: 3,
+			},
+		},
+		{
+			name: "test calculate packs 12",
+			args: args{
+				orderQuantity:  5,
+				availablePacks: []int{3, 7, 13, 14},
+			},
+			want: map[int]int{
+				3: 2,
+			},
+		},
+		{
+			name: "test calculate packs 13",
+			args: args{
+				orderQuantity:  11,
+				availablePacks: []int{2, 3, 4, 7, 14},
+			},
+			want: map[int]int{
+				4: 1,
+				7: 1,
+			},
+		},
+		{
+			name: "test calculate packs 14",
+			args: args{
+				orderQuantity:  13,
+				availablePacks: []int{3, 7, 13, 14},
+			},
+			want: map[int]int{
+				13: 1,
+			},
+		},
+		{
+			name: "test calculate packs 15",
+			args: args{
+				orderQuantity:  12,
+				availablePacks: []int{3, 7, 13, 14},
+			},
+			want: map[int]int{
+				3: 4,
+			},
+		},
+		{
+			name: "test calculate packs 16",
+			args: args{
+				orderQuantity:  20,
+				availablePacks: []int{3, 7, 13, 14},
+			},
+			want: map[int]int{
+				7:  1,
+				13: 1,
+			},
+		},
+		{
+			name: "test calculate packs 17",
+			args: args{
+				orderQuantity:  35,
+				availablePacks: []int{3, 7, 13, 14},
+			},
+			want: map[int]int{
+				7:  1,
+				14: 2,
+			},
+		},
+
+		{
+			name: "test calculate packs 18",
+			args: args{
+				orderQuantity:  37,
+				availablePacks: []int{3, 7, 13, 14},
+			},
+			want: map[int]int{
+				3:  1,
+				7:  1,
+				14: 2,
+			},
+		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {

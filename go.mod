@@ -9,6 +9,7 @@ require (
 	github.com/joho/godotenv v1.5.1
 	github.com/labstack/echo/v4 v4.12.0
 	github.com/labstack/gommon v0.4.2
+	github.com/mxschmitt/golang-combinations v1.2.0
 	github.com/stretchr/testify v1.8.4
 )
 
@@ -28,5 +29,6 @@ require (
 	golang.org/x/net v0.24.0 // indirect
 	golang.org/x/sys v0.19.0 // indirect
 	golang.org/x/text v0.14.0 // indirect
+	golang.org/x/tools v0.15.0 // indirect
 	gopkg.in/yaml.v3 v3.0.1 // indirect
 )

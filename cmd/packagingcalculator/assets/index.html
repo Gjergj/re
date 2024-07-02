@@ -14,8 +14,10 @@
                 },
                 body: JSON.stringify({ pack_sizes: packSizes }),
             })
-                .then(response => response.json())
-                .then(data => console.log(data))
+                .then(response => response.text())
+                .then(data => {
+                    document.getElementById('insert_result').textContent = data
+                })
                 .catch(error => console.error('Error:', error));
         }
 
@@ -37,6 +39,7 @@
     <input type="text" id="packSizes" placeholder="Enter pack sizes, e.g., 100,300,350">
     <button type="submit">Submit</button>
 </form>
+<pre id="insert_result"></pre>
 
 <h2>Get Package Calculator</h2>
 <form onsubmit="getPackageCalculator(event)">

@@ -80,49 +80,84 @@ func NewProductController(p db.Persistence) *ProductController {
 	}
 }
 
-func calculatePacks(orderQuantity int, availablePacks []int) map[int]int {
-	// Sort the pack sizes in descending order
-	sort.Sort(sort.Reverse(sort.IntSlice(availablePacks)))
+type Order struct {
+	size            int
+	packs           map[int]int
+	fulfillmentSize int
+	totalPacks      int
+}
 
-	packCounts := make(map[int]int)
-	remainingQuantity := orderQuantity
+func calculatePacks(orderSize int, packSizes []int) map[int]int {
+	sort.Sort(sort.Reverse(sort.IntSlice(packSizes)))
+	packSizesCpy := make([]int, len(packSizes))
+	copy(packSizesCpy, packSizes)
+	fulfillments := make([]Order, 0)
 
-	for i, packSize := range availablePacks {
-		if remainingQuantity <= 0 {
-			break
+	for len(packSizes) > 0 {
+		o := Order{}
+		packs := make(map[int]int)
+		remaining := orderSize
+
+		//allocate packs from the largest to the smallest
+		for _, pack := range packSizes {
+			if remaining == 0 {
+				break
+			}
+
+			count := remaining / pack
+			if count > 0 {
+				packs[pack] = count
+				o.totalPacks += count
+				o.fulfillmentSize += count * pack
+				remaining -= count * pack
+			}
 		}
-		count := remainingQuantity / packSize
-		remainder := remainingQuantity % packSize
 
-		// If the current pack size can fit at least once
-		if count > 0 {
-			// Check if using the next smaller pack size results in using fewer items to fulfill the order
-			if i < len(availablePacks)-1 && remainder != 0 {
-				nextPackSize := availablePacks[i+1]
-				if (packSize - remainder) < nextPackSize {
-					continue // Skip to the next pack size if it results in a closer match to the order quantity
+		// Handle any remaining items that need to be rounded up to the nearest pack
+		if remaining > 0 {
+			smallestPack := packSizes[len(packSizes)-1]
+			packs[smallestPack]++
+			o.totalPacks++
+			o.fulfillmentSize += smallestPack
+		}
+
+		o.size = orderSize
+		o.packs = packs
+
+		packSizes = packSizes[1:]
+		fulfillments = append(fulfillments, o)
+	}
+
+	for _, f := range fulfillments {
+		for size, count := range f.packs {
+			for _, packSize := range packSizesCpy {
+				if packSize == size*count {
+					delete(f.packs, size)
+					f.packs[packSize] = 1
 				}
 			}
-
-			packCounts[packSize] = count
-			remainingQuantity -= packSize * count
 		}
 	}
 
-	// If there's a remainder that doesn't exactly fit any pack size, add the smallest pack to fulfill the order
-	if remainingQuantity > 0 {
-		smallestPack := availablePacks[len(availablePacks)-1]
-		packCounts[smallestPack]++
-	}
+	// second rule, order by fulfillment size
+	sort.Slice(fulfillments, func(i, j int) bool {
+		return fulfillments[i].fulfillmentSize < fulfillments[j].fulfillmentSize
+	})
 
-	for size, count := range packCounts {
-		for _, packSize := range availablePacks {
-			if packSize == size*count {
-				delete(packCounts, size)
-				packCounts[packSize] = 1
-			}
+	// get the smallest fulfillments of the same size
+	smallestFulfillments := make([]Order, 0)
+	for _, f := range fulfillments {
+		if f.fulfillmentSize == fulfillments[0].fulfillmentSize {
+			smallestFulfillments = append(smallestFulfillments, f)
+		} else {
+			break
 		}
 	}
 
-	return packCounts
+	//third rule, order by total packs and return the smallest
+	sort.Slice(smallestFulfillments, func(i, j int) bool {
+		return smallestFulfillments[i].totalPacks < smallestFulfillments[j].totalPacks
+	})
+
+	return smallestFulfillments[0].packs
 }
